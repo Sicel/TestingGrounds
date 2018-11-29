@@ -11,6 +11,7 @@ using UnityEngine;
 public class Interactable : MonoBehaviour {
 
     public Dialogue dialogue;
+    public Choice choice;
     public static DialogueManager manager;
     public DialogueManager _manager;
     public bool notStarted = true;
