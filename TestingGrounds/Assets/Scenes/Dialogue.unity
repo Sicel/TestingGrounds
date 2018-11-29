@@ -876,6 +876,9 @@ MonoBehaviour:
       value: 
     - key: 
       value: 
+  choice:
+    question: 
+    options: []
   _manager: {fileID: 1821728501}
   notStarted: 1
 --- !u!212 &138128971
@@ -978,7 +981,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77bbeb8061e6dd74b8202439e39b4c3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tree: []
+  tree:
+  - isDialogue: 0
+    isChoice: 0
+    dialogue:
+      name: 
+      question: 
+      choices: []
+      sentences: []
+      altDialogue: []
+      fakeDictionaries: []
+    choice:
+      question: 
+      options: []
+  - isDialogue: 0
+    isChoice: 0
+    dialogue:
+      name: 
+      question: 
+      choices: []
+      sentences: []
+      altDialogue: []
+      fakeDictionaries: []
+    choice:
+      question: 
+      options: []
+  - isDialogue: 0
+    isChoice: 0
+    dialogue:
+      name: 
+      question: 
+      choices: []
+      sentences: []
+      altDialogue: []
+      fakeDictionaries: []
+    choice:
+      question: 
+      options: []
+  - isDialogue: 0
+    isChoice: 0
+    dialogue:
+      name: 
+      question: 
+      choices: []
+      sentences: []
+      altDialogue: []
+      fakeDictionaries: []
+    choice:
+      question: 
+      options: []
+  - isDialogue: 0
+    isChoice: 0
+    dialogue:
+      name: 
+      question: 
+      choices: []
+      sentences: []
+      altDialogue: []
+      fakeDictionaries: []
+    choice:
+      question: 
+      options: []
+  - isDialogue: 0
+    isChoice: 0
+    dialogue:
+      name: 
+      question: 
+      choices: []
+      sentences: []
+      altDialogue: []
+      fakeDictionaries: []
+    choice:
+      question: 
+      options: []
 --- !u!1 &151737380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2505,6 +2580,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bec15b137197e93468e29b77747bb0a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDialogue: 0
+  isChoice: 0
+  dialogue:
+    name: 
+    question: 
+    choices: []
+    sentences: []
+    altDialogue: []
+    fakeDictionaries: []
+  choice:
+    question: 
+    options: []
+  previousNode: {fileID: 0}
+  nextNodes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &717025587
 Transform:
   m_ObjectHideFlags: 0
@@ -2743,6 +2837,58 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &813137312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 813137314}
+  - component: {fileID: 813137313}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &813137313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 813137312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1a512b2912a56439df49b8a68aa691, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogue:
+    name: 
+    question: 
+    choices: []
+    sentences: []
+    altDialogue: []
+    fakeDictionaries: []
+  choice:
+    question: 
+    options: []
+  _manager: {fileID: 0}
+  notStarted: 1
+--- !u!4 &813137314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 813137312}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 265.24243, y: 92.163475, z: -1.5952046}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &819091025
 GameObject:
   m_ObjectHideFlags: 0
@@ -3421,7 +3567,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0009892154, y: 0.0007913634}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
     pivot: {x: 0.5, y: 0.5}
@@ -3432,8 +3578,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.08082716, y: 0.0790647}
-  m_EdgeRadius: 0.23
+  m_Size: {x: 0.14, y: 0.14}
+  m_EdgeRadius: 0
 --- !u!1 &985098241
 GameObject:
   m_ObjectHideFlags: 0
