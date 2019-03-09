@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Choices : MonoBehaviour {
+public class ChoiceManager : MonoBehaviour {
 
     public Player player;
     private Color originalColor;
@@ -16,7 +16,7 @@ public class Choices : MonoBehaviour {
         Debug.Log(name);
         int index = int.Parse(name);
         Debug.Log(index);
-        FindObjectOfType<DialogueManager>().AltText(index);
+        FindObjectOfType<DialogueManager>().ContinueDialogue(index);
     }
 
     // End conversation
@@ -33,7 +33,7 @@ public class Choices : MonoBehaviour {
         player.Teleport();
     }
 
-    // Highlight option mouse is hover over
+    // Highlight option mouse is hovering over
     public void Highlight(GameObject caller)
     {
         originalColor = caller.GetComponent<Text>().color;

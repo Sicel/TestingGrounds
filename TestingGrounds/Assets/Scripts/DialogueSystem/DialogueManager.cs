@@ -14,6 +14,8 @@ public class DialogueManager : MonoBehaviour {
     public Text dialogueText;
     public Text question;
 
+    public BaseNode currentNode;
+
     public List<Text> texts; // Options 
     public List<string> altText; // Text following selected option
 
@@ -24,6 +26,7 @@ public class DialogueManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        Interactable.manager = this;
         sentences = new Queue<string>();
     }
 
@@ -32,6 +35,10 @@ public class DialogueManager : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Begins dialogue
+    /// </summary>
+    /// <param name="dialogue"></param>
     public void StartDialogue(Dialogue dialogue)
     {
         endText = false; // Text has started
@@ -64,6 +71,81 @@ public class DialogueManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Start Dialogue from Node Editor using first node
+    /// </summary>
+    /// <param name="dialogue"></param>
+    public void StartDialogue(List<BaseNode> dialogue)
+    {
+        endText = false;
+        sentences.Clear();
+        textBox.SetActive(true); // Displays text box
+
+        //foreach (BaseNode node in dialogue)
+        //{
+        //    Debug.Log(node);
+        //}
+
+        NextNode(dialogue[0]);
+    }
+
+    /// <summary>
+    /// Goes to next node in Node Editor
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="outputs"></param>
+    public void NextNode(BaseNode node)
+    {
+        //Debug.Log(node);
+        currentNode = node;
+        if (node.hasOutputs)
+        {
+            if (node is DialogueNode)
+            {
+                DialogueNode dialogueNode = node as DialogueNode;
+                foreach (string sentence in dialogueNode.Sentences)
+                {
+                    sentences.Enqueue(sentence);
+                }
+                DisplayNextSentence();
+                NextNode(dialogueNode.Outputs[0]);
+            }
+            else if (node is ChoiceNode)
+            {
+                ChoiceNode choiceNode = node as ChoiceNode;
+                makeChoice = true;
+                DisplayChoices(choiceNode.Choices.ToArray());
+            }
+        }
+        else
+        {
+            EndDialogue();
+        }
+    }
+
+    /// <summary>
+    /// Continues dialogue based on choice player made
+    /// </summary>
+    /// <param name="index"></param>
+    public void ContinueDialogue(int index)
+    {
+        ChoiceNode choice = currentNode as ChoiceNode;
+        NextNode(choice.ChoiceNodePair[index]);
+
+
+        //Debug.Log(altText[index - 1]);
+        //if (altText[index - 1] != "")
+        //{
+        //    sentences.Enqueue(altText[index - 1]);
+        //    choiceBox.SetActive(false);
+        //    makeChoice = false;
+        //    textBox.SetActive(true);
+        //    DisplayNextSentence();
+        //}
+        //else
+        //    EndDialogue();
+    }
+
     // Types out sentence
     IEnumerator TypeSentence(string sentence)
     {
@@ -71,6 +153,7 @@ public class DialogueManager : MonoBehaviour {
         foreach (char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
+            // TODO: Make 0.01 a variable named typing so that it can be adjusted
             yield return new WaitForSeconds(0.01f);
         }
     }
@@ -110,7 +193,7 @@ public class DialogueManager : MonoBehaviour {
     // Displays choices
     public void DisplayChoices(string[] choices)
     {
-        // Displayes the correct number of choices
+        // Displays the correct number of choices
         if (choices.Length < texts.Count)
         {
             for (int i = 1; i < texts.Count - choices.Length; i++)
@@ -136,21 +219,5 @@ public class DialogueManager : MonoBehaviour {
     public void MakeChoice()
     {
         return;
-    }
-
-    public void AltText(int index)
-    {
-        endText = false;
-        Debug.Log(altText[index -1]);
-        if (altText[index-1] != "")
-        {
-            sentences.Enqueue(altText[index - 1]);
-            choiceBox.SetActive(false);
-            makeChoice = false;
-            textBox.SetActive(true);
-            DisplayNextSentence();
-        }
-        else
-            EndDialogue();
     }
 }

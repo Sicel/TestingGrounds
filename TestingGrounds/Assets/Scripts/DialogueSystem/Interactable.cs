@@ -13,25 +13,53 @@ public class Interactable : MonoBehaviour {
     public Dialogue dialogue;
     public Choice choice;
     public static DialogueManager manager;
-    public DialogueManager _manager;
     public bool notStarted = true;
+    public List<BaseNode> windows = new List<BaseNode>();
+
+    public List<BaseNode> Windows
+    {
+        get
+        {
+            return windows;
+        }
+
+        set
+        {
+            windows = value;
+        }
+    }
 
     private void Start()
     {
-        //int index = 0;
-        //for (int i = 0; i < dialogue.fakeDictionaries.Count; i++)
-        //{
-        //    FakeDictionary fD = dialogue.fakeDictionaries[i];
-        //    fD.value = dialogue.altDialogue[i];
-        //    Debug.Log("value:" + fD.value);
-        //    dialogue.fakeDictionaries[i] = fD;
-        //}
     }
 
-    // Starts conversatin
+    public List<BaseNode> SaveDialogue(List<BaseNode> windowsToSave)
+    {
+        for (int i = 0; i < windowsToSave.Count; i++)
+        { 
+            Debug.Log("Windows To Save " + i +  ": " + windowsToSave[i]);
+        }
+        Windows = windowsToSave;
+        for (int i = 0; i < Windows.Count; i++)
+        {
+            Debug.Log("Current " + i + ": " + Windows[i]);
+        }
+        if (Windows.Equals(windowsToSave))
+        {
+            Debug.Log("Lists Match");
+        }
+        return Windows;
+    }
+
+    // Starts conversatioin
     public void TriggerDialogue()
     {
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        //FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        for (int i = 0; i < Windows.Count; i++)
+        {
+            Debug.Log("Current " + i + ": " + Windows[i]);
+        }
+        FindObjectOfType<DialogueManager>().StartDialogue(Windows);
     }
 
     // Must be within range to start conversation
