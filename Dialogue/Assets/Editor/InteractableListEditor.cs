@@ -23,7 +23,6 @@ public class InteractableListEditor : Editor {
                 objects.script = objects.prefab.GetComponent<Interactable>();
             }
             objects.name = objects.prefab.name;
-            objects.dialoguesTree = objects.script.dialogueTree;
         }
     }
 }

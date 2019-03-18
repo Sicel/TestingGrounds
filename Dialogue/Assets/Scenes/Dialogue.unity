@@ -535,7 +535,7 @@ GameObject:
   - component: {fileID: 97671147}
   - component: {fileID: 97671149}
   m_Layer: 5
-  m_Name: Choice1
+  m_Name: Choice0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -557,7 +557,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 28.833162, y: -5.731832}
-  m_SizeDelta: {x: 37.666325, y: 11.463664}
+  m_SizeDelta: {x: 49.82036, y: 15.329341}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &97671145
 MonoBehaviour:
@@ -580,7 +580,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -3530,7 +3530,7 @@ GameObject:
   - component: {fileID: 1021006603}
   - component: {fileID: 1021006602}
   m_Layer: 5
-  m_Name: Choice5
+  m_Name: Choice4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3552,7 +3552,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 28.833162, y: -64.78649}
-  m_SizeDelta: {x: 37.666325, y: 11.463664}
+  m_SizeDelta: {x: 49.82036, y: 15.329341}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1021006602
 MonoBehaviour:
@@ -3698,7 +3698,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -5772,10 +5772,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 11
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -5898,7 +5898,7 @@ GameObject:
   - component: {fileID: 1560846592}
   - component: {fileID: 1560846591}
   m_Layer: 5
-  m_Name: Choice4
+  m_Name: Choice3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5920,7 +5920,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 28.833162, y: -50.022823}
-  m_SizeDelta: {x: 37.666325, y: 11.463664}
+  m_SizeDelta: {x: 49.82036, y: 15.329341}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1560846591
 MonoBehaviour:
@@ -6066,7 +6066,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -6699,7 +6699,7 @@ GameObject:
   - component: {fileID: 1681220748}
   - component: {fileID: 1681220752}
   m_Layer: 5
-  m_Name: Choice3
+  m_Name: Choice2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6721,7 +6721,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 28.833162, y: -35.25916}
-  m_SizeDelta: {x: 37.666325, y: 11.463664}
+  m_SizeDelta: {x: 49.82036, y: 15.329341}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1681220748
 MonoBehaviour:
@@ -6820,7 +6820,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -7254,15 +7254,35 @@ MonoBehaviour:
   choiceBox: {fileID: 1410887158}
   dialogueText: {fileID: 1861562139}
   question: {fileID: 1505216983}
-  currentChoice:
-    index: 0
-    question: 
-    choices: []
   currentIndex: 0
-  choices: []
   texts: []
   altText: []
   currentTree: []
+  currentSChoice:
+    dialogueType: 
+    index: 0
+    windowRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    inputCount: 0
+    inputRects: []
+    inputIndexes: 
+    outputCount: 0
+    outputRects: []
+    outputIndexes: 
+    indexOfFirstInput: 0
+    indexOfFirstOutput: 0
+    sentences: []
+    question: 
+    choices: []
+    choiceNum: 0
+    choiceRects: []
+    choiceDialogueKeys: 
+    choiceDialogueValues: 
+  serializedTree: []
   endText: 0
   makeChoice: 0
 --- !u!4 &1821728502
@@ -8064,7 +8084,7 @@ GameObject:
   - component: {fileID: 2027977696}
   - component: {fileID: 2027977700}
   m_Layer: 5
-  m_Name: Choice2
+  m_Name: Choice1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8086,7 +8106,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 28.833162, y: -20.495497}
-  m_SizeDelta: {x: 37.666325, y: 11.463664}
+  m_SizeDelta: {x: 49.82036, y: 15.329341}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2027977696
 MonoBehaviour:
@@ -8185,7 +8205,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
+    m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1

@@ -84,31 +84,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f1a512b2912a56439df49b8a68aa691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogue:
-    name: Cathy
-    question: How are you
-    choices:
-    - Hi
-    - HI
-    sentences: []
-    altDialogue:
-    - Well helllo to you too!
-    - YOu rock
-    fakeDictionaries:
-    - key: 
-      value: 
-    - key: 
-      value: 
-    - key: 
-      value: 
-    - key: 
-      value: 
-  _manager: {fileID: 0}
-  notStarted: 1
-  windows:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  dialogueNotStarted: 1
+  dialogueTree:
+  - dialogueType: Dialogue
+    index: 0
+    windowRect:
+      serializedVersion: 2
+      x: 181
+      y: 188
+      width: 300
+      height: 300
+    inputCount: 0
+    inputRects: []
+    inputIndexes: 
+    outputCount: 0
+    outputRects: []
+    outputIndexes: 
+    indexOfFirstInput: 0
+    indexOfFirstOutput: 0
+    sentences:
+    - Hello
+    question: 
+    choices: []
+    choiceNum: 0
+    choiceRects: []
+    choiceDialogueKeys: 
+    choiceDialogueValues: 
 --- !u!212 &212910681572086004
 SpriteRenderer:
   m_ObjectHideFlags: 1

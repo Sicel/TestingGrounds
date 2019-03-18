@@ -17,6 +17,8 @@ public class Player : MonoBehaviour {
 
     public Rigidbody2D rigidBody;
 
+    public static DialogueManager manager;
+
 	// Use this for initialization
 	void Start () {
         rigidBody = GetComponent<Rigidbody2D>();

@@ -9,7 +9,6 @@ public class InteractableObjects
     public string name;
     public Interactable script;
     public GameObject prefab;
-    public List<DialogueType> dialoguesTree;
 }
 
 // TODO: Get Interactable objects in scene and display them

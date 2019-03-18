@@ -19,10 +19,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4609183123360254}
+  - component: {fileID: 114033757528893574}
   - component: {fileID: 212479893377970860}
   - component: {fileID: 61822277603107124}
   - component: {fileID: 61919004449784236}
-  - component: {fileID: 114033757528893574}
   m_Layer: 0
   m_Name: Stove
   m_TagString: Untagged
@@ -104,22 +104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f1a512b2912a56439df49b8a68aa691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogue:
-    name: Stove
-    question: 
-    choices:
-    - We wil
-    - Rock You
-    sentences:
-    - It's a stove
-    - Not much else to say
-    altDialogue:
-    - We will
-    - Rock You
-    fakeDictionaries: []
-  _manager: {fileID: 0}
   notStarted: 1
-  windows: []
+  serializedDialogueTree: []
 --- !u!212 &212479893377970860
 SpriteRenderer:
   m_ObjectHideFlags: 1

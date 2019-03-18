@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class DialogueManager : MonoBehaviour {
 
+    public static DialogueManager dialogueManger;
+
     public Queue<string> sentences; // Text to be displayed
 
     public GameObject textBox; // Box for dialogue
@@ -13,23 +15,27 @@ public class DialogueManager : MonoBehaviour {
 
     public Text dialogueText;
     public Text question;
-
-    public Choice currentChoice;
+    
     public int currentIndex;
-
-    public List<string> choices;
 
     public List<Text> texts; // Options 
     public List<string> altText; // Text following selected option
 
     public List<DialogueType> currentTree;
+    public DialogueType currentSChoice;
+
+    public List<DialogueType> serializedTree;
 
     public bool endText = false; // Conversation ended
-    public bool makeChoice = false; // Will this conversation have a question?
+    public bool makeChoice = false; // Player is making choice
 
-	// Use this for initialization
-	void Start () {
-        Interactable.manager = this;
+    private void Awake()
+    {
+        dialogueManger = this;
+    }
+
+    // Use this for initialization
+    void Start () {
         sentences = new Queue<string>();
     }
 
@@ -38,95 +44,47 @@ public class DialogueManager : MonoBehaviour {
 
     }
 
-    /// <summary>
-    /// Begins dialogue
-    /// </summary>
-    /// <param name="dialogue"></param>
-    public void StartDialogue(Dialogue dialogue)
+    public void StartDialogue(List<DialogueType> dialogueTree)
     {
-        endText = false; // Text has started
-        texts = new List<Text>();
-        texts.AddRange(choiceBox.GetComponentsInChildren<Text>()); // Puts choices in ChoiceBox into list
-        sentences.Clear(); // Gets rid of previous conversation
-        textBox.SetActive(true); // Displays text box
-
-        foreach (string sentence in dialogue.sentences)
-        { 
-            sentences.Enqueue(sentence);
-        }
-        
-        // If there are no choices to make the choiceBox never shows up
-        if (dialogue.choices.Count != 0)
-        {
-            //foreach (FakeDictionary fD in dialogue.fakeDictionaries)
-            //    altText.Add(fD.value);
-            altText = dialogue.altDialogue; // Gets possible alternative text
-            texts[0].text = dialogue.question;
-            choices = dialogue.choices;
-            makeChoice = true;
-        }
-
-        DisplayNextSentence(); // Shows first sentence
-
-        if (sentences.Count == 0)
-        {
-            DisplayChoices(choices.ToArray());
-        }
-    }
-
-    /// <summary>
-    /// Start Dialogue from object's dialogue tree
-    /// </summary>
-    /// <param name="dialogueTree"></param>
-    public void StartDialogue(List<DialogueType> dialogueTree, Interactable inter)
-    {
-        currentTree = dialogueTree;
+        serializedTree = dialogueTree;
         endText = false;
         sentences.Clear();
         currentIndex = 0;
-        inter.dialogue = currentTree[currentIndex] as Dialogue;
 
         Debug.Log("From SD: " + dialogueTree.Count);
 
-        if (currentTree[currentIndex] is Choice)
+        if (serializedTree[0].dialogueType == "Choice")
         {
-            Choice choice = currentTree[currentIndex] as Choice;
             makeChoice = true;
-            DisplayChoices(choice.choices.ToArray());
+            DisplayChoices(serializedTree[currentIndex]);
             return;
         }
-
-        Dialogue normalDialogue = currentTree[currentIndex] as Dialogue;
         textBox.SetActive(true); // Displays text box
 
-        foreach (string sentence in normalDialogue.sentences)
+        foreach (string sentence in serializedTree[0].sentences)
         {
             sentences.Enqueue(sentence);
         }
 
-        //foreach (BaseNode node in dialogue)
-        //{
-        //    Debug.Log(node);
-        //}
+        DisplayNextSentence();
     }
 
     void ContinueDialogue()
     {
         currentIndex++;
-        if (currentTree[currentIndex] == null)
+        if (serializedTree[currentIndex].dialogueType == null)
         {
             EndDialogue();
             return;
         }
 
-        if (currentTree[currentIndex] is Choice)
+        if (serializedTree[currentIndex].dialogueType == "Choice")
         {
-            DisplayChoices(currentTree[currentIndex] as Choice);
+            DisplayChoices(serializedTree[currentIndex]);
         }
-        else
+        else if (serializedTree[currentIndex].dialogueType == "Dialogue")
         {
-            Dialogue dialogue = currentTree[currentIndex] as Dialogue;
-            foreach (string sentence in dialogue.sentences)
+            foreach (string sentence in serializedTree[currentIndex].sentences)
             {
                 sentences.Enqueue(sentence);
             }
@@ -145,14 +103,13 @@ public class DialogueManager : MonoBehaviour {
     public void ContinueDialogueFromChoice(int choiceIndex)
     {
         currentIndex++;
-        if (currentChoice.ChoiceDialoguePair[choiceIndex] is Choice)
+        if (serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]].dialogueType == "Choice")
         {
-            DisplayChoices(currentChoice.ChoiceDialoguePair[choiceIndex] as Choice);
+            DisplayChoices(serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]]);
         }
         else
         {
-            Dialogue dialogue = currentChoice.ChoiceDialoguePair[choiceIndex] as Dialogue;
-            foreach (string sentence in dialogue.sentences)
+            foreach (string sentence in serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]].sentences)
             {
                 sentences.Enqueue(sentence);
             }
@@ -161,18 +118,6 @@ public class DialogueManager : MonoBehaviour {
             textBox.SetActive(true);
             DisplayNextSentence();
         }
-
-        //Debug.Log(altText[index - 1]);
-        //if (altText[index - 1] != "")
-        //{
-        //    sentences.Enqueue(altText[index - 1]);
-        //    choiceBox.SetActive(false);
-        //    makeChoice = false;
-        //    textBox.SetActive(true);
-        //    DisplayNextSentence();
-        //}
-        //else
-        //    EndDialogue();
     }
 
     // Types out sentence
@@ -194,7 +139,7 @@ public class DialogueManager : MonoBehaviour {
         if (sentences.Count == 0 || sentences == null)
         {
             // End conversation when there are no more sentences and at end of tree 
-            if (currentTree[currentIndex].Outputs.Count == 0)
+            if (serializedTree[currentIndex].outputCount == 0)
             {
                 EndDialogue();
                 return;
@@ -216,74 +161,38 @@ public class DialogueManager : MonoBehaviour {
     public void EndDialogue()
     {
         textBox.SetActive(false);
-        // If there are any choices to make they'll be shown after the orginal conversation ends
-        if (!makeChoice || choiceBox.activeSelf)
-        {
-            choiceBox.SetActive(false);
-            endText = true; // End of conversation
-        }
-        else
-        {
-            DisplayChoices(choices.ToArray());  
-        }
+        choiceBox.SetActive(false);
+        endText = true; // End of conversation
+
     }
 
     // Displays choices
-    public void DisplayChoices(string[] choices)
+    public void DisplayChoices(DialogueType choice)
     {
+        currentSChoice = choice;
         texts = new List<Text>();
+        question.text = choice.question;
         texts.AddRange(choiceBox.GetComponentsInChildren<Text>()); // Puts choices in ChoiceBox into list
 
         // Displays the correct number of choices
-        if (choices.Length < texts.Count)
+        if (choice.choices.Count < texts.Count)
         {
-            for (int i = 1; i < texts.Count - choices.Length; i++)
+            for (int i = 1; i < texts.Count - choice.choices.Count; i++)
             {
                 texts[texts.Count - i].gameObject.SetActive(false);
             }
         }
         else
         {
-            for (int i = 1; i == texts.Count - choices.Length; i++)
+            for (int i = 1; i == texts.Count - choice.choices.Count; i++)
             {
                 texts[texts.Count - i].gameObject.SetActive(true);
             }
         }
 
-        for (int i = 0; i < choices.Length; i++)
+        for (int i = 0; i < choice.choices.Count; i++)
         {
-            texts[i+1].text = choices[i];
-        }
-        choiceBox.SetActive(true); // Displays choices Box
-    }
-    
-    // Displays choices
-    public void DisplayChoices(Choice choice)
-    {
-        currentChoice = choice;
-        string[] choices = choice.choices.ToArray();
-        texts = new List<Text>();
-        texts.AddRange(choiceBox.GetComponentsInChildren<Text>()); // Puts choices in ChoiceBox into list
-
-        // Displays the correct number of choices
-        if (choices.Length < texts.Count)
-        {
-            for (int i = 1; i < texts.Count - choices.Length; i++)
-            {
-                texts[texts.Count - i].gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            for (int i = 1; i == texts.Count - choices.Length; i++)
-            {
-                texts[texts.Count - i].gameObject.SetActive(true);
-            }
-        }
-
-        for (int i = 0; i < choices.Length; i++)
-        {
-            texts[i+1].text = choices[i];
+            texts[i + 1].text = choice.choices[i];
         }
         choiceBox.SetActive(true); // Displays choices Box
     }

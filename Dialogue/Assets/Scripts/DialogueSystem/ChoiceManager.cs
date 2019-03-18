@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Collection of possible outcomes from choice made
+/// </summary>
 public class ChoiceManager : MonoBehaviour {
 
     public Player player;
@@ -16,20 +19,20 @@ public class ChoiceManager : MonoBehaviour {
         Debug.Log(name);
         int index = int.Parse(name);
         Debug.Log(index);
-        FindObjectOfType<DialogueManager>().ContinueDialogueFromChoice(index);
+        DialogueManager.dialogueManger.ContinueDialogueFromChoice(index);
     }
 
     // End conversation
     public void StopDialogue()
     {
-        FindObjectOfType<DialogueManager>().EndDialogue();
+        DialogueManager.dialogueManger.EndDialogue();
     }
 
     // Teleport to location
     public void GlitchOut()
     {
         Debug.Log("Clicked!");
-        FindObjectOfType<DialogueManager>().EndDialogue();
+        DialogueManager.dialogueManger.EndDialogue();
         player.Teleport();
     }
 

@@ -4,19 +4,12 @@ using UnityEngine;
 using UnityEditor;
 
 
-class DialogueNode : BaseInputNode
-{
-    private List<BaseNode> inputs;
-    private List<Rect> inputRects;
-
-    private List<BaseNode> outputs;
-    private List<Rect> outputRects;
-
+class DialogueNode : BaseNode {
     private int numText;
 
     private List<string> sentences;
 
-    private Dialogue dialogue;
+    private DialogueType dialogue;
 
     Vector2 scrollPos;
 
@@ -99,7 +92,7 @@ class DialogueNode : BaseInputNode
         }
     }
 
-    public Dialogue Dialogue
+    public DialogueType Dialogue
     {
         get
         {
@@ -125,8 +118,17 @@ class DialogueNode : BaseInputNode
 
         sentences = new List<string>();
 
-        dialogue = new Dialogue();
-        dialogue.ConnectedNode = this;
+        dialogue = new DialogueType()
+        {
+            dialogueType = "Dialogue",
+            windowRect = windowRect,
+            index = index,
+            sentences = new List<string>(),
+            inputIndexes = new List<int>(),
+            inputRects = new List<Rect>(),
+            outputIndexes = new List<int>(),
+            outputRects = new List<Rect>()
+        };
 
         hasInputs = true;
     }
@@ -190,7 +192,13 @@ class DialogueNode : BaseInputNode
         }
         EditorGUILayout.EndScrollView();
 
+        dialogue.windowRect = windowRect;
+        dialogue.index = index;
         dialogue.sentences = sentences;
+        dialogue.inputRects = inputRects;
+        dialogue.inputCount = inputRects.Count;
+        dialogue.outputRects = outputRects;
+        dialogue.outputCount = outputRects.Count;
 
         if (GUILayout.Button("Clear All", GUILayout.Height(20)))
         {
@@ -201,11 +209,9 @@ class DialogueNode : BaseInputNode
             outputs.Clear();
             outputRects.Clear();
         }
-
-        dialogue.ConnectedNode = this;
     }
 
-    public override void SetInput(BaseInputNode input, Vector2 clickPos)
+    public override void SetInput(BaseNode input, Vector2 clickPos)
     {
         clickPos.x -= windowRect.x;
         clickPos.y -= windowRect.y;
@@ -218,18 +224,8 @@ class DialogueNode : BaseInputNode
 
         inputs.Add(input);
         inputRects.Add(input.windowRect);
-
-        // TODO: Comment
-        if (input is DialogueNode)
-        {
-            DialogueNode dInput = input as DialogueNode;
-            dialogue.Inputs.Add(dInput.dialogue);
-        }
-        else if (input is ChoiceNode)
-        {
-            ChoiceNode cInput = input as ChoiceNode;
-            dialogue.Inputs.Add(cInput.Choice);
-        }
+        dialogue.inputIndexes.Add(input.index);
+        dialogue.inputRects.Add(input.windowRect);
     }
 
     public override void SetOutput(BaseNode output, Vector2 clickPos)
@@ -243,18 +239,8 @@ class DialogueNode : BaseInputNode
 
         outputs.Add(output);
         outputRects.Add(output.windowRect);
-
-        // TODO: Comment
-        if (output is DialogueNode)
-        {
-            DialogueNode dOutput = output as DialogueNode;
-            dialogue.Outputs.Add(dOutput.dialogue);
-        }
-        else if (output is ChoiceNode)
-        {
-            ChoiceNode cOutput = output as ChoiceNode;
-            dialogue.Outputs.Add(cOutput.Choice);
-        }
+        dialogue.outputIndexes.Add(output.index);
+        dialogue.outputRects.Add(output.windowRect);
 
         hasOutputs = true;
     }
@@ -305,18 +291,8 @@ class DialogueNode : BaseInputNode
                 inputs.Remove(inputs[i]);
                 inputRects.Remove(inputRects[i]);
 
-                // TODO: Comment
-                if (inputs[i] is DialogueNode)
-                {
-                    DialogueNode dInput = inputs[i] as DialogueNode;
-                    dialogue.Inputs.Remove(dInput.dialogue);
-                }
-                else if (inputs[i] is ChoiceNode)
-                {
-                    ChoiceNode cInput = inputs[i] as ChoiceNode;
-                    dialogue.Inputs.Remove(cInput.Choice);
-                }
-
+                dialogue.inputIndexes.Remove(dialogue.inputIndexes[i]);
+                dialogue.inputRects.Remove(dialogue.inputRects[i]);
                 break;
             }
         }
@@ -328,18 +304,8 @@ class DialogueNode : BaseInputNode
                 outputs.Remove(outputs[i]);
                 outputRects.Remove(outputRects[i]);
 
-                // TODO: Comment
-                if (outputs[i] is DialogueNode)
-                {
-                    DialogueNode dOutput = outputs[i] as DialogueNode;
-                    dialogue.Outputs.Remove(dOutput.dialogue);
-                }
-                else if (outputs[i] is ChoiceNode)
-                {
-                    ChoiceNode cOutput = outputs[i] as ChoiceNode;
-                    dialogue.Outputs.Remove(cOutput.Choice);
-                }
-
+                dialogue.outputIndexes.Remove(dialogue.outputIndexes[i]);
+                dialogue.outputRects.Remove(dialogue.outputRects[i]);
                 break;
             }
         }
