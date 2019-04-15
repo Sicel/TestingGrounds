@@ -5,18 +5,6 @@ using UnityEditor;
 
 
 class ChoiceNode : BaseNode {
-    private Dictionary<int, BaseNode> choiceNodePair;
-
-    private List<Rect> choiceRects;
-
-    private int numChoices;
-
-    private string prompt;
-
-    private List<string> choices;
-
-    private DialogueType choice;
-
     Vector2 scrollPos;
 
     #region Properties
@@ -72,89 +60,21 @@ class ChoiceNode : BaseNode {
         }
     }
 
-    public Dictionary<int, BaseNode> ChoiceNodePair
-    {
-        get
-        {
-            return choiceNodePair;
-        }
+    public Dictionary<int, BaseNode> ChoiceNodePair { get; set; }
 
-        set
-        {
-            choiceNodePair = value;
-        }
-    }
+    public List<Rect> ChoiceRects { get; set; }
 
-    public List<Rect> ChoiceRects
-    {
-        get
-        {
-            return choiceRects;
-        }
+    public List<string> Choices { get; set; }
 
-        set
-        {
-            choiceRects = value;
-        }
-    }
+    public int NumChoices { get; set; }
 
-    public List<string> Choices
-    {
-        get
-        {
-            return choices;
-        }
-
-        set
-        {
-            choices = value;
-        }
-    }
-
-    public int NumChoices
-    {
-        get
-        {
-            return numChoices;
-        }
-
-        set
-        {
-            numChoices = value;
-        }
-    }
-
-    public string Prompt
-    {
-        get
-        {
-            return prompt;
-        }
-
-        set
-        {
-            prompt = value;
-        }
-    }
-
-    public DialogueType Choice
-    {
-        get
-        {
-            return choice;
-        }
-
-        set
-        {
-            choice = value;
-        }
-    }
+    public string Prompt { get; set; }
     #endregion
 
     public ChoiceNode()
     {
         windowTitle = "Choice Node";
-        choices = new List<string>();
+        Choices = new List<string>();
 
         inputs = new List<BaseNode>();
         inputRects = new List<Rect>();
@@ -162,11 +82,11 @@ class ChoiceNode : BaseNode {
         outputs = new List<BaseNode>();
         outputRects = new List<Rect>();
 
-        choiceRects = new List<Rect>();
+        ChoiceRects = new List<Rect>();
 
-        choiceNodePair = new Dictionary<int, BaseNode>();
+        ChoiceNodePair = new Dictionary<int, BaseNode>();
 
-        choice = new DialogueType()
+        dialogueType = new DialogueType()
         {
             dialogueType = "Choice",
             windowRect = windowRect,
@@ -191,49 +111,49 @@ class ChoiceNode : BaseNode {
         Event e = Event.current;
 
         EditorGUILayout.LabelField("Prompt:");
-        prompt = EditorGUILayout.TextArea(prompt);
+        Prompt = EditorGUILayout.TextArea(Prompt);
 
-        numChoices = EditorGUILayout.IntField("Number of Choices", numChoices);
-        if (numChoices < 0)
+        NumChoices = EditorGUILayout.IntField("Number of Choices", NumChoices);
+        if (NumChoices < 0)
         {
-            numChoices = 0;
+            NumChoices = 0;
         }
 
         EditorGUILayout.LabelField("Choices:");
         EditorGUILayout.Space();
         
-        int difference = Mathf.Abs(numChoices - choices.Count);
-        if (choices.Count < numChoices)
+        int difference = Mathf.Abs(NumChoices - Choices.Count);
+        if (Choices.Count < NumChoices)
         {
             for (int i = 0; i < difference; i++)
             {
-                choices.Add("");
-                choiceRects.Add(new Rect());
+                Choices.Add("");
+                ChoiceRects.Add(new Rect());
             }
         }
-        else if (choices.Count > numChoices)
+        else if (Choices.Count > NumChoices)
         {
-            if (numChoices != 0)
+            if (NumChoices != 0)
             {
-                choices.RemoveRange(numChoices - 1, difference);
-                choiceRects.RemoveRange(numChoices - 1, difference);
-                for (int i = numChoices; i < difference; i++)
+                Choices.RemoveRange(NumChoices - 1, difference);
+                ChoiceRects.RemoveRange(NumChoices - 1, difference);
+                for (int i = NumChoices; i < difference; i++)
                 {
-                    if (choiceNodePair.ContainsKey(i))
+                    if (ChoiceNodePair.ContainsKey(i))
                     {
-                        choiceNodePair.Remove(i);
-                        choice.choiceDialogueKeys.Remove(i);
-                        choice.choiceDialogueValues.RemoveAt(i);
+                        ChoiceNodePair.Remove(i);
+                        dialogueType.choiceDialogueKeys.Remove(i);
+                        dialogueType.choiceDialogueValues.RemoveAt(i);
                     }
                 }
             }
             else
             {
-                choices.Clear();
-                choiceRects.Clear();
-                choiceNodePair.Clear();
-                choice.choiceDialogueKeys.Clear();
-                choice.choiceDialogueValues.Clear();
+                Choices.Clear();
+                ChoiceRects.Clear();
+                ChoiceNodePair.Clear();
+                dialogueType.choiceDialogueKeys.Clear();
+                dialogueType.choiceDialogueValues.Clear();
             }
         }
 
@@ -254,43 +174,43 @@ class ChoiceNode : BaseNode {
         }
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
-        for (int i = 0; i < choices.Count; i++)
+        for (int i = 0; i < Choices.Count; i++)
         {
             EditorGUILayout.LabelField("Option " + (i + 1));
-            choices[i] = EditorGUILayout.TextArea(choices[i], GUILayout.Height(30));
+            Choices[i] = EditorGUILayout.TextArea(Choices[i], GUILayout.Height(30));
         }
         EditorGUILayout.EndScrollView();
 
         // Location of TextAreas
         AddChoiceRects();
 
-        choice.windowRect = windowRect;
-        choice.index = index;
-        choice.question = prompt;
-        choice.choices = choices;
-        choice.choiceNum = numChoices;
-        choice.inputCount = inputs.Count;
-        choice.inputRects = inputRects;
-        choice.outputCount = outputs.Count;
-        choice.outputRects = outputRects;
-        choice.choiceRects = choiceRects;
+        dialogueType.windowRect = windowRect;
+        dialogueType.index = index;
+        dialogueType.question = Prompt;
+        dialogueType.choices = Choices;
+        dialogueType.choiceNum = NumChoices;
+        dialogueType.inputCount = inputs.Count;
+        dialogueType.inputRects = inputRects;
+        dialogueType.outputCount = outputs.Count;
+        dialogueType.outputRects = outputRects;
+        dialogueType.choiceRects = ChoiceRects;
 
         if (GUILayout.Button("Clear All", GUILayout.Height(20)))
         {
-            numChoices = 0;
+            NumChoices = 0;
             inputRects.Clear();
             inputs.Clear();
             outputs.Clear();
             outputRects.Clear();
-            choiceNodePair.Clear();
+            ChoiceNodePair.Clear();
         }
     }
 
     public void AddChoiceRects()
     {
-        for (int i = 0; i < numChoices; i++)
+        for (int i = 0; i < NumChoices; i++)
         {
-            choiceRects[i] = new Rect(5, 103 + (50 * i), 290, 50);
+            ChoiceRects[i] = new Rect(5, 103 + (50 * i), 290, 50);
         }
     }
 
@@ -308,7 +228,7 @@ class ChoiceNode : BaseNode {
         inputs.Add(input);
         inputRects.Add(input.windowRect);
 
-        choice.inputIndexes.Add(input.index);
+        dialogueType.inputIndexes.Add(input.index);
     }
 
     public override void SetOutput(BaseNode output, Vector2 clickPos)
@@ -316,20 +236,20 @@ class ChoiceNode : BaseNode {
         clickPos.x -= windowRect.x;
         clickPos.y -= windowRect.y;
         
-        for (int i = 0; i < choiceRects.Count; i++)
+        for (int i = 0; i < ChoiceRects.Count; i++)
         {
-            if (choiceRects[i].Contains(clickPos))
+            if (ChoiceRects[i].Contains(clickPos))
             {
-                if (!choiceNodePair.ContainsKey(i))
+                if (!ChoiceNodePair.ContainsKey(i))
                 {
-                    choiceNodePair.Add(i, output);
-                    choice.choiceDialogueKeys.Add(i);
-                    choice.choiceDialogueValues.Add(output.index);
+                    ChoiceNodePair.Add(i, output);
+                    dialogueType.choiceDialogueKeys.Add(i);
+                    dialogueType.choiceDialogueValues.Add(output.index);
                     break;
                 }
 
-                choiceNodePair[i] = output;
-                choice.choiceDialogueValues[i] = output.index;
+                ChoiceNodePair[i] = output;
+                dialogueType.choiceDialogueValues[i] = output.index;
             }
         }
 
@@ -342,20 +262,20 @@ class ChoiceNode : BaseNode {
         outputs.Add(output);
         outputRects.Add(output.windowRect);
 
-        choice.outputIndexes.Add(output.index);
+        dialogueType.outputIndexes.Add(output.index);
 
         hasOutputs = true;
     }
 
     public override void DrawCurves()
     {
-        if (choiceNodePair.Count != 0)
+        if (ChoiceNodePair.Count != 0)
         {
-            foreach (KeyValuePair<int, BaseNode> connection in choiceNodePair)
+            foreach (KeyValuePair<int, BaseNode> connection in ChoiceNodePair)
             {
                 if (connection.Value)
                 {
-                    Rect rect = choiceRects[connection.Key];
+                    Rect rect = ChoiceRects[connection.Key];
                     rect.x = rect.x + rect.width + windowRect.x;
                     rect.y = rect.y + (rect.height / 2) + windowRect.y;
                     rect.width = 1;
@@ -420,15 +340,14 @@ class ChoiceNode : BaseNode {
             }
         }
 
-        for (int i = 0; i < choiceNodePair.Count; i++)
+        for (int i = 0; i < ChoiceNodePair.Count; i++)
         {
-            if (node.Equals(choiceNodePair[i]))
+            if (node.Equals(ChoiceNodePair[i]))
             {
-                choiceNodePair.Remove(i);
-
-                // TODO: Comment
-                choice.choiceDialogueKeys.Remove(i);
-                choice.choiceDialogueValues.Remove(i);
+                ChoiceNodePair.Remove(i);
+                
+                dialogueType.choiceDialogueKeys.Remove(i);
+                dialogueType.choiceDialogueValues.Remove(i);
                 break;
             }
         }

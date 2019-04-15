@@ -22,12 +22,13 @@ public class NodeEditor : EditorWindow {
         set { EditorPrefs.SetInt("SelectedInteractable", value); }
     }
 
-    private static InteractableList interactableList;
+    public static InteractableList interactableList;
 
     [MenuItem("Window/Node Editor")]
     static void ShowEditor()
     {
         NodeEditor editor = GetWindow<NodeEditor>();
+        editor.Show();
         // Loads in the interactbles database from this file location
         interactableList = AssetDatabase.LoadAssetAtPath<InteractableList>("Assets/InteractableList.asset");
     }
@@ -263,19 +264,21 @@ public class NodeEditor : EditorWindow {
         // Creates Nodes depending on selection made in menu
         if (clb.Equals("dialogueNode"))
         {
-            DialogueNode dialogueNode = new DialogueNode();
+            DialogueNode dialogueNode = CreateInstance<DialogueNode>();
             dialogueNode.windowRect = new Rect(mousePos.x, mousePos.y, 300, 300);
             dialogueNode.index = windows.Count;
 
             windows.Add(dialogueNode);
+            interactableList.interactables[SelectedInteractable].dialogueTree.Add(dialogueNode.dialogueType);
         }
         else if (clb.Equals("choiceNode"))
         {
-            ChoiceNode choiceNode = new ChoiceNode();
+            ChoiceNode choiceNode = CreateInstance<ChoiceNode>();
             choiceNode.windowRect = new Rect(mousePos.x, mousePos.y, 300, 300);
             choiceNode.index = windows.Count;
 
             windows.Add(choiceNode);
+            interactableList.interactables[SelectedInteractable].dialogueTree.Add(choiceNode.dialogueType);
         }
         // When "Make Transition" is selected
         else if (clb.Equals("makeTransition"))
@@ -325,6 +328,8 @@ public class NodeEditor : EditorWindow {
                 {
                     n.NodeDeleted(selNode);
                 }
+
+                SaveDialogue(SelectedInteractable);
             }
         }
     }
@@ -405,7 +410,8 @@ public class NodeEditor : EditorWindow {
             //}
             if (GUI.Button(new Rect(5, 0, 50, 20), "Save"))
             {
-                interactableList.interactables[index].script.SaveDialogue(windows);
+                SaveDialogue(index);
+                //interactableList.interactables[index].script.SaveDialogue(windows[0]);
 
                 GUI.FocusControl(null);
             }
@@ -437,12 +443,14 @@ public class NodeEditor : EditorWindow {
         }
     }
 
-    /// <summary>
-    /// Saves changes made in Node Editor to interactable
-    /// </summary>
     void SaveDialogue(int index)
     {
-
+        interactableList.interactables[index].dialogueTree.Clear();
+        for (int i = 0; i < windows.Count; i++)
+        {
+            interactableList.interactables[index].dialogueTree.Add(windows[i].dialogueType);
+        }
+        interactableList.interactables[index].script.dialogueTree = interactableList.interactables[index].dialogueTree;
     }
 
     /// <summary>
@@ -452,7 +460,6 @@ public class NodeEditor : EditorWindow {
     /// <param name="index"></param>
     void GetPreviousDialogue(int index)
     {
-        // TODO: COMMENT EVERYTHING
         // Create the nodes that could be added to the list
         DialogueNode prevDialogue = null;
         ChoiceNode prevChoices = null;
@@ -461,7 +468,7 @@ public class NodeEditor : EditorWindow {
         if (interactableList.interactables[index].script.dialogue.sentences.Count != 0)
         {
             // Creates a new DialogueNode and sets its windowRect properties
-            prevDialogue = new DialogueNode();
+            prevDialogue = CreateInstance<DialogueNode>();
             prevDialogue.windowRect = new Rect(110, 0, 300, 300);
 
             // Centers the node in the middle of the window right next to sidebar
@@ -481,8 +488,8 @@ public class NodeEditor : EditorWindow {
         // If interactable prompts a choice
         if (interactableList.interactables[index].script.dialogue.choices.Count != 0)
         {
-            // Assigns prevChoices (declared above) to a new CHoiceNode and sets its windowRect properties
-            prevChoices = new ChoiceNode();
+            // Assigns prevChoices (declared above) to a new ChoiceNode and sets its windowRect properties
+            prevChoices = CreateInstance<ChoiceNode>();
             prevChoices.windowRect = new Rect(110, 0, 300, 300);
 
             // Centers the node in the middle of the window right next to sideba
@@ -526,7 +533,7 @@ public class NodeEditor : EditorWindow {
             for (int i = 0; i < interactableList.interactables[index].script.dialogue.altDialogue.Count; i++)
             {
                 // Creates a node for the followup dialogue and sets its windowRect
-                DialogueNode followUps = new DialogueNode();
+                DialogueNode followUps = CreateInstance<DialogueNode>();
                 followUps.windowRect = new Rect(0, 0, 300, 300);
 
                 // Location is based on the number of followups and stacks them them on top of each other
@@ -559,7 +566,7 @@ public class NodeEditor : EditorWindow {
     {
         windows.Clear();
 
-        List<DialogueType> currentTree = interactableList.interactables[index].script.dialogueTree;
+        List<DialogueType> currentTree = interactableList.interactables[index].dialogueTree;
         
         // Converts the dialogue types into nodes and adds them to list
         foreach (DialogueType dialogueType in currentTree)
@@ -570,32 +577,28 @@ public class NodeEditor : EditorWindow {
             // Creates nodes based on the data from the serialized tree
             if (dialogueType.dialogueType == "Dialogue")
             {
-                newDialogue = new DialogueNode()
-                {
-                    windowRect = dialogueType.windowRect,
-                    index = dialogueType.index,
-                    Sentences = dialogueType.sentences,
-                    NumText = dialogueType.sentences.Count,
-                    InputRects = dialogueType.inputRects,
-                    OutputRects = dialogueType.outputRects
-                };
-
+                newDialogue = CreateInstance<DialogueNode>();
+                newDialogue.windowRect = dialogueType.windowRect;
+                newDialogue.index = dialogueType.index;
+                newDialogue.Sentences = dialogueType.sentences;
+                newDialogue.NumText = dialogueType.sentences.Count;
+                newDialogue.InputRects = dialogueType.inputRects;
+                newDialogue.OutputRects = dialogueType.outputRects;
+                
                 windows.Add(newDialogue);
             }
             else if (dialogueType.dialogueType == "Choice")
             {
-                newChoice = new ChoiceNode()
-                {
-                    windowRect = dialogueType.windowRect,
-                    index = dialogueType.index,
-                    NumChoices = dialogueType.choiceNum,
-                    Prompt = dialogueType.question,
-                    Choices = dialogueType.choices,
-                    InputRects = dialogueType.inputRects,
-                    OutputRects = dialogueType.outputRects,
-                    ChoiceRects = dialogueType.choiceRects
-                };
-
+                newChoice = CreateInstance<ChoiceNode>();
+                newChoice.windowRect = dialogueType.windowRect;
+                newChoice.index = dialogueType.index;
+                newChoice.NumChoices = dialogueType.choiceNum;
+                newChoice.Prompt = dialogueType.question;
+                newChoice.Choices = dialogueType.choices;
+                newChoice.InputRects = dialogueType.inputRects;
+                newChoice.OutputRects = dialogueType.outputRects;
+                newChoice.ChoiceRects = dialogueType.choiceRects;
+                
                 windows.Add(newChoice);
             }
         }
@@ -608,13 +611,19 @@ public class NodeEditor : EditorWindow {
             // Sets inputs
             for (int j = 0; j < dT.inputIndexes.Count; j++)
             {
-                windows[i].inputs.Add(windows[dT.inputIndexes[j]]);
+                if (!windows[i].inputs.Contains(windows[dT.inputIndexes[j]]))
+                {
+                    windows[i].inputs.Add(windows[dT.inputIndexes[j]]);
+                }
             }
 
             // Sets outputs
             for (int j = 0; j < dT.outputIndexes.Count; j++)
             {
-                windows[i].outputs.Add(windows[dT.outputIndexes[j]]);
+                if (!windows[i].outputs.Contains(windows[dT.outputIndexes[j]]))
+                {
+                    windows[i].outputs.Add(windows[dT.outputIndexes[j]]);
+                }
             }
 
             if (windows[i] is ChoiceNode)

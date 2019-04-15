@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -13,10 +14,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactables:
   - name: Interactable
-    script: {fileID: 114776162487212718, guid: 32f734b39ef7a774b8e520d9336988df, type: 2}
-    prefab: {fileID: 1425885723721606, guid: 32f734b39ef7a774b8e520d9336988df, type: 2}
-    dialoguesTree: []
+    script: {fileID: 114776162487212718, guid: 32f734b39ef7a774b8e520d9336988df, type: 3}
+    prefab: {fileID: 1425885723721606, guid: 32f734b39ef7a774b8e520d9336988df, type: 3}
+    dialogueTree:
+    - dialogueType: Dialogue
+      index: 0
+      windowRect:
+        serializedVersion: 2
+        x: 231
+        y: 152
+        width: 300
+        height: 300
+      inputCount: 0
+      inputRects: []
+      inputIndexes: 
+      outputCount: 0
+      outputRects: []
+      outputIndexes: 
+      indexOfFirstInput: 0
+      indexOfFirstOutput: 0
+      sentences:
+      - gdsfgdfsgdfg
+      question: 
+      choices: []
+      choiceNum: 0
+      choiceRects: []
+      choiceDialogueKeys: 
+      choiceDialogueValues: 
   - name: Stove
-    script: {fileID: 114033757528893574, guid: d3f9f4d63a7c38444b7631143c108aaa, type: 2}
-    prefab: {fileID: 1871160421427262, guid: d3f9f4d63a7c38444b7631143c108aaa, type: 2}
-    dialoguesTree: []
+    script: {fileID: 114033757528893574, guid: d3f9f4d63a7c38444b7631143c108aaa, type: 3}
+    prefab: {fileID: 1871160421427262, guid: d3f9f4d63a7c38444b7631143c108aaa, type: 3}
+    dialogueTree: []

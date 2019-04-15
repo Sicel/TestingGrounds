@@ -20,6 +20,8 @@ public abstract class BaseNode : ScriptableObject {
     public List<BaseNode> outputs;
     public List<Rect> outputRects;
 
+    public DialogueType dialogueType;
+
     public string windowTitle = "";
 
     /// <summary>
@@ -36,26 +38,22 @@ public abstract class BaseNode : ScriptableObject {
     public abstract void DrawCurves();
 
     /// <summary>
-    /// Used by sub-classes; called when clicked on window during transition
-    /// Optional for nodes that don't have inputs
+    /// Sets node as input
     /// </summary>
     /// <param name="input">Node being set as input</param>
     /// <param name="clickPos">Where mouse left-clicked</param>
     public virtual void SetInput(BaseNode input, Vector2 clickPos) { }
 
     /// <summary>
-    /// Used by dialogue and choice node to set up outputs
+    /// Sets node as output
     /// </summary>
     /// <param name="output">Node being set as output</param>
-    /// <param name="clickPos">Where mouse right-clicked</param>
+    /// <param name="clickPos">Where mouse right-clicked - For choice nodes</param>
     public virtual void SetOutput(BaseNode output, Vector2 clickPos) { }
 
-
+    /// <summary>
+    /// Removes all references of deleted node
+    /// </summary>
+    /// <param name="node">Node that is being delted</param>
     public virtual void NodeDeleted(BaseNode node) { }
-
-    // Called when click happens on "input" in window, otherwise returns null
-    public virtual BaseNode ClickedOnInput(Vector2 pos)
-    {
-        return null;
-    }
 }

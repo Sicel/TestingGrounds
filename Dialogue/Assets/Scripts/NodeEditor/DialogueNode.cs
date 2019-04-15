@@ -5,12 +5,6 @@ using UnityEditor;
 
 
 class DialogueNode : BaseNode {
-    private int numText;
-
-    private List<string> sentences;
-
-    private DialogueType dialogue;
-
     Vector2 scrollPos;
 
     #region Properties
@@ -40,19 +34,6 @@ class DialogueNode : BaseNode {
         }
     }
 
-    public List<string> Sentences
-    {
-        get
-        {
-            return sentences;
-        }
-
-        set
-        {
-            sentences = value;
-        }
-    }
-
     public List<Rect> InputRects
     {
         get
@@ -79,31 +60,9 @@ class DialogueNode : BaseNode {
         }
     }
 
-    public int NumText
-    {
-        get
-        {
-            return numText;
-        }
+    public List<string> Sentences { get; set; }
 
-        set
-        {
-            numText = value;
-        }
-    }
-
-    public DialogueType Dialogue
-    {
-        get
-        {
-            return dialogue;
-        }
-
-        set
-        {
-            dialogue = value;
-        }
-    }
+    public int NumText { get; set; }
     #endregion
 
     public DialogueNode()
@@ -116,9 +75,9 @@ class DialogueNode : BaseNode {
         outputs = new List<BaseNode>();
         outputRects = new List<Rect>();
 
-        sentences = new List<string>();
+        Sentences = new List<string>();
 
-        dialogue = new DialogueType()
+        dialogueType = new DialogueType()
         {
             dialogueType = "Dialogue",
             windowRect = windowRect,
@@ -135,37 +94,36 @@ class DialogueNode : BaseNode {
 
     public override void DrawWindow()
     {
-        // TODO: Paste input code from ChoiceNode
         base.DrawWindow();
 
         Event e = Event.current;
 
-        numText = EditorGUILayout.IntField("Number of Sentences", numText);
-        if (numText < 0)
+        NumText = EditorGUILayout.IntField("Number of Sentences", NumText);
+        if (NumText < 0)
         {
-            numText = 0;
+            NumText = 0;
         }
 
         EditorGUILayout.LabelField("Dialogue:");
         EditorGUILayout.Space();
 
-        int difference = Mathf.Abs(numText - sentences.Count);
-        if (sentences.Count < numText)
+        int difference = Mathf.Abs(NumText - Sentences.Count);
+        if (Sentences.Count < NumText)
         {
             for (int i = 0; i < difference; i++)
             {
-                sentences.Add("Enter Dialogue Here");
+                Sentences.Add("Enter Dialogue Here");
             }
         }
-        else if (sentences.Count > numText)
+        else if (Sentences.Count > NumText)
         {
-            if (numText != 0)
+            if (NumText != 0)
             {
-                sentences.RemoveRange(numText - 1, difference);
+                Sentences.RemoveRange(NumText - 1, difference);
             }
             else
             {
-                sentences.Clear();
+                Sentences.Clear();
             }
         }
 
@@ -186,24 +144,24 @@ class DialogueNode : BaseNode {
         }
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
-        for (int i = 0; i < sentences.Count; i++)
+        for (int i = 0; i < Sentences.Count; i++)
         {
-            sentences[i] = EditorGUILayout.TextArea(sentences[i], GUILayout.Height(30));
+            Sentences[i] = EditorGUILayout.TextArea(Sentences[i], GUILayout.Height(30));
         }
         EditorGUILayout.EndScrollView();
 
-        dialogue.windowRect = windowRect;
-        dialogue.index = index;
-        dialogue.sentences = sentences;
-        dialogue.inputRects = inputRects;
-        dialogue.inputCount = inputRects.Count;
-        dialogue.outputRects = outputRects;
-        dialogue.outputCount = outputRects.Count;
+        dialogueType.windowRect = windowRect;
+        dialogueType.index = index;
+        dialogueType.sentences = Sentences;
+        dialogueType.inputRects = inputRects;
+        dialogueType.inputCount = inputRects.Count;
+        dialogueType.outputRects = outputRects;
+        dialogueType.outputCount = outputRects.Count;
 
         if (GUILayout.Button("Clear All", GUILayout.Height(20)))
         {
-            numText = 0;
-            sentences.Clear();
+            NumText = 0;
+            Sentences.Clear();
             inputs.Clear();
             inputRects.Clear();
             outputs.Clear();
@@ -224,13 +182,12 @@ class DialogueNode : BaseNode {
 
         inputs.Add(input);
         inputRects.Add(input.windowRect);
-        dialogue.inputIndexes.Add(input.index);
-        dialogue.inputRects.Add(input.windowRect);
+        dialogueType.inputIndexes.Add(input.index);
+        dialogueType.inputRects.Add(input.windowRect);
     }
 
     public override void SetOutput(BaseNode output, Vector2 clickPos)
     {
-        // TODO: Add ways to get outputs
         for (int i = 0; i < outputs.Count; i++)
         {
             if (outputs[i].Equals(output))
@@ -239,28 +196,14 @@ class DialogueNode : BaseNode {
 
         outputs.Add(output);
         outputRects.Add(output.windowRect);
-        dialogue.outputIndexes.Add(output.index);
-        dialogue.outputRects.Add(output.windowRect);
+        dialogueType.outputIndexes.Add(output.index);
+        dialogueType.outputRects.Add(output.windowRect);
 
         hasOutputs = true;
     }
 
     public override void DrawCurves()
     {
-        //for (int i = 0; i < inputs.Count; i++)
-        //{
-        //    if (inputs[i])
-        //    {
-        //        Rect rect = windowRect;
-        //        rect.x = rect.x + (rect.width / 2);
-        //        rect.y = rect.y + (rect.height / 2);
-        //        rect.width = 1;
-        //        rect.height = 1;
-
-        //        NodeEditor.DrawNodeCurve(inputs[i].windowRect, rect);
-        //    }
-        //}
-
         for (int i = 0; i < outputs.Count; i++)
         {
             if (outputs[i])
@@ -291,8 +234,8 @@ class DialogueNode : BaseNode {
                 inputs.Remove(inputs[i]);
                 inputRects.Remove(inputRects[i]);
 
-                dialogue.inputIndexes.Remove(dialogue.inputIndexes[i]);
-                dialogue.inputRects.Remove(dialogue.inputRects[i]);
+                dialogueType.inputIndexes.Remove(dialogueType.inputIndexes[i]);
+                dialogueType.inputRects.Remove(dialogueType.inputRects[i]);
                 break;
             }
         }
@@ -304,8 +247,8 @@ class DialogueNode : BaseNode {
                 outputs.Remove(outputs[i]);
                 outputRects.Remove(outputRects[i]);
 
-                dialogue.outputIndexes.Remove(dialogue.outputIndexes[i]);
-                dialogue.outputRects.Remove(dialogue.outputRects[i]);
+                dialogueType.outputIndexes.Remove(dialogueType.outputIndexes[i]);
+                dialogueType.outputRects.Remove(dialogueType.outputRects[i]);
                 break;
             }
         }

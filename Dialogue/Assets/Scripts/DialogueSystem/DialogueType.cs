@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// DialogueType that will be used for serialization
+/// Nodes that will be used for serialization
 /// </summary>
 [System.Serializable]
 public struct DialogueType
 {
-    [HideInInspector]
     public string dialogueType; // type of dialogue; Choice or Dialogue
     public int index; // location in dialogueTree
     public Rect windowRect; // rectangle of node

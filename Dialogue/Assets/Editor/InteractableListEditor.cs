@@ -12,6 +12,8 @@ public class InteractableListEditor : Editor {
 
         base.OnInspectorGUI();
 
+        int index = 0;
+
         foreach (InteractableObjects objects in m_target.interactables)
         {
             if (objects.script != null)
@@ -23,6 +25,19 @@ public class InteractableListEditor : Editor {
                 objects.script = objects.prefab.GetComponent<Interactable>();
             }
             objects.name = objects.prefab.name;
+            objects.script.index = index;
+
+            if (GUILayout.Button("Clear List: " + index))
+            {
+                objects.dialogueTree.Clear();
+            }
+
+            index++;
+        }
+
+        foreach (InteractableObjects objects in m_target.interactables)
+        {
+            objects.script.dialogueTree = objects.dialogueTree;
         }
     }
 }

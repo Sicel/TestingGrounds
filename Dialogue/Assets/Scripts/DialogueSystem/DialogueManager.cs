@@ -29,6 +29,8 @@ public class DialogueManager : MonoBehaviour {
     public bool endText = false; // Conversation ended
     public bool makeChoice = false; // Player is making choice
 
+    public float typeSpeed = 0.01f;
+
     private void Awake()
     {
         dialogueManger = this;
@@ -44,6 +46,10 @@ public class DialogueManager : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Begins dialogue
+    /// </summary>
+    /// <param name="dialogueTree"></param>
     public void StartDialogue(List<DialogueType> dialogueTree)
     {
         serializedTree = dialogueTree;
@@ -69,29 +75,36 @@ public class DialogueManager : MonoBehaviour {
         DisplayNextSentence();
     }
 
+    /// <summary>
+    /// Goes to next node in dialogue tree and continues dialogue based on node
+    /// </summary>
     void ContinueDialogue()
     {
         currentIndex++;
-        if (serializedTree[currentIndex].dialogueType == null)
+        if (currentIndex >= serializedTree.Count)
         {
             EndDialogue();
             return;
         }
 
-        if (serializedTree[currentIndex].dialogueType == "Choice")
+        switch (serializedTree[currentIndex].dialogueType)
         {
-            DisplayChoices(serializedTree[currentIndex]);
-        }
-        else if (serializedTree[currentIndex].dialogueType == "Dialogue")
-        {
-            foreach (string sentence in serializedTree[currentIndex].sentences)
-            {
-                sentences.Enqueue(sentence);
-            }
-            choiceBox.SetActive(false);
-            makeChoice = false;
-            textBox.SetActive(true);
-            DisplayNextSentence();
+            case "Choice":
+                DisplayChoices(serializedTree[currentIndex]);
+                break;
+            case "Dialogue":
+                foreach (string sentence in serializedTree[currentIndex].sentences)
+                {
+                    sentences.Enqueue(sentence);
+                }
+                choiceBox.SetActive(false);
+                makeChoice = false;
+                textBox.SetActive(true);
+                DisplayNextSentence();
+                break;
+            default:
+                EndDialogue();
+                return;
         }
     }
 
@@ -102,37 +115,53 @@ public class DialogueManager : MonoBehaviour {
     /// <param name="choiceIndex"></param>
     public void ContinueDialogueFromChoice(int choiceIndex)
     {
-        currentIndex++;
-        if (serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]].dialogueType == "Choice")
+        if (choiceIndex > currentSChoice.choiceDialogueValues.Count - 1)
         {
-            DisplayChoices(serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]]);
+            EndDialogue();
+            return;
         }
-        else
+
+        currentIndex = serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]].index;
+
+        switch (serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]].dialogueType)
         {
-            foreach (string sentence in serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]].sentences)
-            {
-                sentences.Enqueue(sentence);
-            }
-            choiceBox.SetActive(false);
-            makeChoice = false;
-            textBox.SetActive(true);
-            DisplayNextSentence();
+            case "Choice":
+                DisplayChoices(serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]]);
+                break;
+            case "Dialogue":
+                foreach (string sentence in serializedTree[currentSChoice.choiceDialogueValues[choiceIndex]].sentences)
+                {
+                    sentences.Enqueue(sentence);
+                }
+                choiceBox.SetActive(false);
+                makeChoice = false;
+                textBox.SetActive(true);
+                DisplayNextSentence();
+                break;
+            default:
+                EndDialogue();
+                break;
         }
     }
 
-    // Types out sentence
+    /// <summary>
+    /// Types out sentence 
+    /// </summary>
+    /// <param name="sentence"></param>
+    /// <returns></returns>
     IEnumerator TypeSentence(string sentence)
     {
         dialogueText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
-            // TODO: Make 0.01 a variable named typing so that it can be adjusted
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(typeSpeed);
         }
     }
 
-    // Goes to next sentence
+    /// <summary>
+    /// Goes to next sentence 
+    /// </summary>
     public void DisplayNextSentence()
     {
         // When out of sentences in the queue
@@ -142,13 +171,13 @@ public class DialogueManager : MonoBehaviour {
             if (serializedTree[currentIndex].outputCount == 0)
             {
                 EndDialogue();
-                return;
             }
             // Continue conversation if not at end of tree
             else
             {
                 ContinueDialogue();
             }
+            return;
         }
 
         // Displays next sentence
@@ -157,16 +186,20 @@ public class DialogueManager : MonoBehaviour {
         StartCoroutine(TypeSentence(sentence));
     }
 
-    // Stops conversation
+    /// <summary>
+    /// Stops conversation 
+    /// </summary>
     public void EndDialogue()
     {
         textBox.SetActive(false);
         choiceBox.SetActive(false);
         endText = true; // End of conversation
-
     }
 
-    // Displays choices
+    /// <summary>
+    /// Displays choices 
+    /// </summary>
+    /// <param name="choice"></param>
     public void DisplayChoices(DialogueType choice)
     {
         currentSChoice = choice;
@@ -194,11 +227,50 @@ public class DialogueManager : MonoBehaviour {
         {
             texts[i + 1].text = choice.choices[i];
         }
+
+        if (textBox.activeSelf)
+        {
+            textBox.SetActive(false);
+        }
+
         choiceBox.SetActive(true); // Displays choices Box
+
+        ChoiceSelection();
     }
 
-    public void MakeChoice()
+    /// <summary>
+    /// I have no idea why this is a thing
+    /// </summary>
+    public void ChoiceSelection()
     {
-        return;
+        int currentSelection = 1;
+        //while (choiceBox.activeSelf)
+        //{
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                currentSelection++;
+
+                if (currentSelection == texts.Count)
+                {
+                    currentSelection = 1;
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.W))
+            {
+                currentSelection--;
+
+                if (currentSelection == 0)
+                {
+                    currentSelection = texts.Count;
+                }
+            }
+
+            texts[currentSelection].text += " <-";
+            
+            //if (Input.GetKeyDown(KeyCode.Space) && displayedTime >= 1)
+            //{
+            //    texts[currentSelection].GetComponent<Button>().onClick.Invoke();
+            //}
+        //}
     }
 }

@@ -9,15 +9,13 @@ public class Player : MonoBehaviour {
     public float displayedTime = 0;
 
     public Vector2 teleportPosition;
-    Vector2 returnPosition;
+    //Vector2 returnPosition;
 
     public Text keepReading;
     public GameObject textBox;
     public GameObject choiceBox;
 
     public Rigidbody2D rigidBody;
-
-    public static DialogueManager manager;
 
 	// Use this for initialization
 	void Start () {
@@ -70,7 +68,7 @@ public class Player : MonoBehaviour {
             }
             if (choiceBox.activeSelf)
             {
-                FindObjectOfType<DialogueManager>().MakeChoice();
+                return;
             }
         }
         // Allows movement
@@ -84,7 +82,7 @@ public class Player : MonoBehaviour {
     public void Teleport()
     {
         Debug.Log("first " + rigidBody.position);
-        returnPosition = rigidBody.position;
+        //returnPosition = rigidBody.position;
         transform.position = teleportPosition;
         rigidBody.MovePosition(teleportPosition);
         Debug.Log(rigidBody.position);

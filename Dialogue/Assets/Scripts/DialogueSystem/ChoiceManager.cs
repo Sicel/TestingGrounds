@@ -16,9 +16,7 @@ public class ChoiceManager : MonoBehaviour {
     {
         string name = choice.name;
         name = name.Remove(0, 6);
-        Debug.Log(name);
         int index = int.Parse(name);
-        Debug.Log(index);
         DialogueManager.dialogueManger.ContinueDialogueFromChoice(index);
     }
 

@@ -8,17 +8,29 @@ using UnityEditor;
 public class InteractableEditor : Editor {
 
     bool showTree = true; // Shows elements in dialogue tree
-    bool showElement = true; // Shows element's information
+    bool showElement = false; // Shows element's information
 
     public override void OnInspectorGUI()
     {
+        //base.OnInspectorGUI();
+
+        InteractableList interactableList = AssetDatabase.LoadAssetAtPath<InteractableList>("Assets/InteractableList.asset");
+
+        Interactable interactable = (Interactable)target;
+
+        interactable.dialogueTree = interactableList.interactables[interactable.index].dialogueTree;
+
         SerializedProperty dialogueTree = serializedObject.FindProperty("dialogueTree");
         SerializedProperty notStarted = serializedObject.FindProperty("dialogueNotStarted");
-
         EditorGUILayout.PropertyField(notStarted);
 
+        if (GUILayout.Button("Clear Tree"))
+        {
+            dialogueTree.ClearArray();
+        }
+
         // Shows elements in dialogue tree
-        showTree = EditorGUILayout.Foldout(showTree, "Dialogue Tree", true);
+        showTree = EditorGUILayout.Foldout(showTree, "Dialogue Tree: " + dialogueTree.arraySize, true);
         if (showTree)
         {
             EditorGUI.indentLevel++;
@@ -27,6 +39,7 @@ public class InteractableEditor : Editor {
                 // Gets the parts of the node that will be displayed
                 SerializedProperty currentDialogueType = dialogueTree.GetArrayElementAtIndex(i);
                 SerializedProperty index = currentDialogueType.FindPropertyRelative("index");
+                index.intValue = i;
                 SerializedProperty dialogueType = currentDialogueType.FindPropertyRelative("dialogueType");
                 SerializedProperty inputCount = currentDialogueType.FindPropertyRelative("inputCount");
                 SerializedProperty outputCount = currentDialogueType.FindPropertyRelative("outputCount");
@@ -35,6 +48,7 @@ public class InteractableEditor : Editor {
                 SerializedProperty choices = currentDialogueType.FindPropertyRelative("choices");
                 SerializedProperty choiceNum = currentDialogueType.FindPropertyRelative("choiceNum");
 
+                // TODO: Fix ArgumentException error
                 // Shows specific element in tree
                 showElement = EditorGUILayout.Foldout(showElement, index.intValue + ": " + dialogueType.stringValue, true);
                 if (showElement)
