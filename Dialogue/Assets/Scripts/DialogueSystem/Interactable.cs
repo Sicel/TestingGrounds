@@ -21,6 +21,7 @@ public class Interactable : MonoBehaviour {
 
     private void Start()
     {
+        int i = 0;
     }
 
     public void SaveDialogue(BaseNode nodeToSave)
