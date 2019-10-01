@@ -74,6 +74,8 @@ class ChoiceNode : BaseNode {
     public ChoiceNode()
     {
         windowTitle = "Choice Node";
+
+        NumChoices = 2;
         Choices = new List<string>();
 
         inputs = new List<BaseNode>();

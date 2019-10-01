@@ -69,6 +69,8 @@ class DialogueNode : BaseNode {
     {
         windowTitle = "Dialogue Node";
 
+        NumText = 1;
+
         inputs = new List<BaseNode>();
         inputRects = new List<Rect>();
 
